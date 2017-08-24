@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		
+		
+		<title>Document</title>
+		<style>
+		*{margin:0px;padding:0px;}
+		.box{width:200px;height:200px;border:1px solid red;overflow:auto;position:relative;}
+		.con{width:150px;height:300px;background:blue;position:relative;}
+		</style>
+	</head>
+	<body>
+		<div class="box">
+			<div class="con"></div>
+		</div>
+		<!--IE6 7下，子元素有相对定位属性，父元素的overflow包不住子元素
+			解决办法：
+			给父元素也添加相对定位属性
+		-->
+	</body>
+</html>

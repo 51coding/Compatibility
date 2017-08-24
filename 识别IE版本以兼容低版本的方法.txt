@@ -1,0 +1,81 @@
+识别IE版本以兼容低版本的方法css hack 
+这个针对对应的IE版本进行CSS兼容的方法，其实就是利用条件注释。
+
+什么是条件注释
+
+条件注释可用于区分是否为IE浏览器以及是IE浏览器时的版本，条件注释只能用于IE5以上。
+
+非IE浏览器只会将条件注释看做普通注释而忽略。
+
+如下：
+
+<!--[if !IE]><!--> 除IE外都可识别 <!--<![endif]-->  
+<!--[if IE]> 所有的IE可识别 <![endif]-->   
+<!--[if IE 6]> 仅IE6可识别 <![endif]-->  
+<!--[if IE 7]> 仅IE7可识别 <![endif]-->
+<!--[if IE 8]> 仅IE8可识别 <![endif]-->
+<!--[if IE 9]> 仅IE9可识别 <![endif]-->
+<!--[if lt IE 9]> IE9以下版本可识别 <![endif]-->  
+<!--[if gte IE 9]> IE9以及IE9以上版本可识别 <![endif]-->
+其中：
+
+gt : greater than ，高于某版本（不包含）
+lt : less than ，低于某版本（不包含）
+gte : greater than or equal ，高于某版本（包含）
+lte : less than or equal ，低于某版本（包含）
+如何使用条件注释
+
+示例
+
+<!DOCTYPE html>    
+
+<!--[if lt IE 7]> <html class="IE6"> <![endif]-->
+<!--[if IE 7]>    <html class="IE7"> <![endif]-->
+<!--[if IE 8]>    <html class="IE8"> <![endif]-->
+<!--[if IE 9]>    <html class="IE9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html> <!--<![endif]-->
+
+<head></head>
+<body></body>
+</html>
+以上代码为我在本站所使用的，通过IE浏览器版本来解析对应的条件注释内容，这样IE9及低于IE9的版本 <html> 都会添加一个class属性，这样就在对应IE版本下进行样式的兼容。
+
+/* 为IE8时兼容的样式 */
+.IE8 .wrap {
+    position: relative;
+    width: 1000px;
+}
+.IE8 .wrap > div {
+    border: 1px solid #C0D1FF;
+}
+以上适用于少量样式的兼容，兼容内容较多还可以这样用：
+
+/* 只在对应版本的IE下加载用于兼容的CSS及JS代码 */
+<!--[if lt IE 9]>
+<link rel="stylesheet" href="xxx.css">
+<script src="xxx.js"></script>
+<![endif]-->
+这个方法优点在于非常简单，且不需要使用JavaScript。
+
+3.16更新：
+
+此方法仅适用于判断IE10以下版本，10以上不支持
+另附一个用此方法判断低版本IE的一个函数
+
+  function isIE(ver) {
+      var b = document.createElement('b');
+      b.innerHTML = '<!--[if IE ' + ver + ']><i></i><![endif]-->';
+      return b.getElementsByTagName('i').length === 1;
+  }
+
+  // 使用示例
+  if (isIE(9)) {
+      // todo
+  } else if (isIE(8)) {
+      // todo
+  }
+
+作者：Lizhg
+链接：http://www.jianshu.com/p/d4e64958a18f
+來源：简书
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。

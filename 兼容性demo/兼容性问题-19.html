@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		
+		
+		<title>Document</title>
+		<style>
+		*{margin:0px;padding:0px;}
+		.box{width:200px;height:32px;border:1px solid red; 
+		background:url(ball.png) no-repeat; }
+		input{width:100px;height:30px;padding:0;float:left;border:none;background:none;
+		/*background:#fff url(ball.png) no-repeat fixed;*/}
+
+		</style>
+	</head>
+	<body>
+		<div class="box">
+			<input type="text"/>
+		</div>
+		<!--IE6 7下，1、输入类型的表单控件添加背景图片 url和no-repeat之间一定要有空格
+
+					2、输入文字时候，背景图片会跟着移动
+		
+			解决办法：2、给背景图片固定定位，但是在IE7下 背景图片显示会错误
+
+					最佳办法：把背景图添加给父元素
+		-->
+	</body>
+</html>
+

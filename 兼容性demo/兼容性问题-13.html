@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		
+		
+		<title>Document</title>
+		<style>
+		*{margin:0px;padding:0px;}
+
+		.box{width:200px;height:200px;border:1px solid #000;position:relative;}
+		ul{width:150px; height:150px;background:red;float:left;margin:0 0 0 50px;}
+		span{width:50px;height:50px;background:blue;position:absolute;right:-20px;top:0;}
+		</style>
+	</head>
+	<body>
+		<div class="box">
+			<ul></ul>
+			<div><span></span></div>
+		</div>
+		<!--IE6下，当浮动元素和绝对定位元素是并列关系的时候，绝对定位元素会消失
+		
+		解决办法：给定位元素外面包一个div
+		-->
+
+	</body>
+</html>

@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		
+		
+		<title>Document</title>
+		<style>
+		*{margin:0px;padding:0px;}
+		.box{width:400px;}
+		.left{width:200px;height:210px;background:red;float:left}
+		.right{width:200px;float:right;overflow:hidden;}
+		.div{width:180px;height:180px;background:blue;padding:25px;}
+		</style>
+	</head>
+	<body>
+		<div class="box">
+			<div class="left"></div>
+			<div class="right">
+				<div class="div"></div>
+			</div>
+		</div>
+		<!--在Ie6下，内容会把父元素设置好的宽高撑开。计算一定要精确-->
+	</body>
+</html>

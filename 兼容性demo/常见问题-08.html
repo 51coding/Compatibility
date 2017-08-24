@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		
+		
+		<title>Document</title>
+		<style>
+		*{margin:0px;padding:0px;}
+		.box{float:left;border:10px solid #000;width:600px;}
+		.box div{
+			width:100px;height:100px;background:red;margin:20px;
+			border:5px solid blue;float:left;display:inline;
+		}
+
+		</style>
+	</head>
+	<body>
+		<div class="box">
+			<div>1</div>
+			<div>2</div>
+			<div>3</div>
+			<div>4</div>
+			<div>1</div>
+			<div>2</div>
+			<div>3</div>
+			<div>3</div>
+		</div>
+		<!--IE6双边距bug：横向的margin值会被放大为两倍
+			解决方法：display:inline;
+
+
+			IE6下外边距消失：当父元素的宽度和一行内容的宽度的差别>3px的时候 
+		-->
+	</body>
+</html>

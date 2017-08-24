@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		
+		
+		<title>Document</title>
+		<style>
+		*{margin:0px;padding:0px;}
+
+		.box{background:red;border:1px solid red;zoom:1;
+		/*padding:1px;*/}
+		.div{width:200px;height:200px;background:blue;margin:100px}
+		</style>
+	</head>
+	<body>
+		<div class="box">
+			<div class="div"></div>
+		</div>
+		<!--IE6下，父元素用边框，子元素的margin会消失
+			解决办法：触发父元素的haslayout;
+		-->
+	</body>
+</html>

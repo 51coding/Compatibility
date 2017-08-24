@@ -1,0 +1,288 @@
+浅析JavaScript中浏览器的兼容问题
+浏览器兼容性问题是在实际开发中容易忽略而又最重要的一部分。我们在讲老版本浏览器兼容问题之前，首先要了解什么是能力检测，它是来检测浏览器有没有这种能力，即判断当前浏览器是否支持要调用的属性或者方法。下面做了一些简短的介绍。
+
+1、innerText 和 innerContent
+ 1）innerText 和 innerContent 的作用相同
+2）innerText IE8之前的浏览器支持
+3）innerContent 老版本的Firefox支持
+4）新版本的浏览器两种方式都支持
+
+ 
+1 // 老版本浏览器兼容 innerText 和 innerContent
+2 if (element.textContent) {
+3    return element.textContent ;
+4  } else {
+5    return element.innerText;
+6  }
+ 
+
+2、获取兄弟节点/元素的兼容性问题
+ 1）兄弟节点，所有浏览器都支持
+        ①nextSibling 下一个兄弟节点，可能是非元素节点；会获取到文本节点
+        ②previousSibling  上一个兄弟节点，可能是非元素节点；会获取到文本节点
+ 2）兄弟元素，IE8以前不支持
+
+        ①previousElementSibling 获取上一个紧邻的兄弟元素，会忽略空白  
+         ②nextElementSibling  获取下一个紧邻的兄弟元素，会忽略空白
+
+//兼容浏览器
+// 获取下一个紧邻的兄弟元素
+function getNextElement(element) {
+  // 能力检测
+ if(element.nextElementSibling) {
+   return element.nextElementSibling;
+  } else {
+     var node = element.nextSibling;
+     while(node && node.nodeType !== 1) {
+         node = node.nextibling;
+     }
+     return node;
+  }
+ }
+
+/**
+* 返回上一个元素
+* @param element
+* @returns {*}
+*/
+function getPreviousElement(element) {
+  if(element.previousElementSibling) {
+    return element.previousElementSibling;
+  }else {
+    var el = element.previousSibling;
+    while(el && el.nodeType !== 1) {
+      el = el.previousSibling;
+      }
+    return el;
+  }
+}
+
+/**
+* 返回第一个元素firstElementChild的浏览器兼容
+* @param parent
+* @returns {*}
+*/
+function getFirstElement(parent) {
+  if(parent.firstElementChild) {
+    return parent.firstElementChild;
+  }else {
+    var el = parent.firstChild;
+    while(el && el.nodeType !== 1) {
+      el = el.nextSibling;
+      }
+    return el;
+  }
+}
+
+/**
+* 返回最后一个元素
+* @param parent
+* @returns {*}
+*/
+function getLastElement(parent) {
+  if(parent.lastElementChild) {
+    return parent.lastElementChild;
+  }else {
+    var el = parent.lastChild;
+    while(el && el.nodeType !== 1) {
+      el = el.previousSibling;
+      }
+    return el;
+  }
+}
+
+/**
+*获取当前元素的所有兄弟元素
+* @param element
+* @returns {Array}
+*/
+function sibling(element) {
+  if(!element) return ;
+   
+  var elements = [ ];
+  var el = element.previousSibling;
+  while(el) {
+    if(el.nodeType === 1) {
+      elements.push(el);
+    }
+    el = el.previousSibling;
+  }
+   el = element.previousSibling;
+   while(el ) {
+    if(el.nodeType === 1) {
+      elements.push(el);
+    }
+    el = el.nextSibling;
+  }
+    return elements;
+}
+ 
+
+3、array.filter();   
+  // 使用指定的函数测试所有元素，并创建一个包含所有通过测试的元素的新数组
+
+// 兼容旧环境
+if (!Array.prototype.filter)
+{
+ Array.prototype.filter = function(fun /*, thisArg */)
+ {
+  "use strict";
+  if (this === void 0 || this === null)
+   throw new TypeError();
+  var t = Object(this);
+  var len = t.length >>> 0;
+  if (typeof fun !== "function")
+   throw new TypeError();
+  var res = [];
+  var thisArg = arguments.length >= 2 ? arguments[1] : void 0;
+  for (var i = 0; i < len; i++)
+  {
+   if (i in t)
+   {
+    var val = t[i];
+    // NOTE: Technically this should Object.defineProperty at
+    //    the next index, as push can be affected by
+    //    properties on Object.prototype and Array.prototype.
+    //    But that method's new, and collisions should be
+    //    rare, so use the more-compatible alternative.
+    if (fun.call(thisArg, val, i, t))
+     res.push(val);
+   }
+  }
+  return res;
+ };
+}
+ 
+
+4、array.forEach();
+ // 遍历数组
+
+//兼容旧环境
+// Production steps of ECMA-262, Edition 5, 15.4.4.18
+// Reference: http://es5.github.io/#x15.4.4.18
+if (!Array.prototype.forEach) {
+ Array.prototype.forEach = function(callback, thisArg) {
+  var T, k;
+  if (this == null) {
+   throw new TypeError(' this is null or not defined');
+  }
+  // 1. Let O be the result of calling toObject() passing the
+  // |this| value as the argument.
+  var O = Object(this);
+  // 2. Let lenValue be the result of calling the Get() internal
+  // method of O with the argument "length".
+  // 3. Let len be toUint32(lenValue).
+  var len = O.length >>> 0;
+  // 4. If isCallable(callback) is false, throw a TypeError
+  exception. // See: http://es5.github.com/#x9.11
+  if (typeof callback !== "function") {
+   throw new TypeError(callback + ' is not a function');
+  }
+  // 5. If thisArg was supplied, let T be thisArg; else let
+  // T be undefined.
+  if (arguments.length > 1) {
+   T = thisArg;
+  }
+  // 6. Let k be 0
+  k = 0;
+  // 7. Repeat, while k < len
+  while (k < len) {
+   var kValue;
+   // a. Let Pk be ToString(k).
+   //  This is implicit for LHS operands of the in operator
+   // b. Let kPresent be the result of calling the HasProperty
+   //  internal method of O with argument Pk.
+   //  This step can be combined with c
+   // c. If kPresent is true, then
+   if (k in O) {
+    // i. Let kValue be the result of calling the Get internal
+    // method of O with argument Pk.
+    kValue = O[k];
+    // ii. Call the Call internal method of callback with T as
+    // the this value and argument list containing kValue, k, and O.
+    callback.call(T, kValue, k, O);
+   }
+   // d. Increase k by 1.
+   k++;
+  }
+  // 8. return undefined
+ };
+}
+ 
+
+5、注册事件
+.addEventListener = function (type,listener,useCapture ) { }; 
+ //第一个参数 事件名称 
+//第二个参数 事件处理函数（监听者） 
+//第三个参数 true捕获 false冒泡 
+//IE9以后才支持 
+// 兼容旧环境
+
+var EventTools = {
+    addEventListener: function (element, eventName, listener) {
+      //能力检测
+      if(element.addEventListener) {
+        element.addEventListener(eventName, listener,false);
+      }else if(element.attachEvent) {
+        element.attachEvent("on" + eventName, listener);
+      }else{
+        element["on" + eventName] = listener;
+      }
+    },
+ 
+//  想要移除事件，不能使用匿名函数
+    removeEventListener: function (element, eventName, listener) {
+      if(element.removeEventListener) {
+        element.removeEventListener(eventName,listener,false);
+      }else if(element.detachEvent) { //IE8以前注册.attachEvent和移除事件.detachEvent
+        element.detachEvent("on"+eventName,listener);
+      }else{
+        element["on" + eventName] = null;
+      }
+    }
+  };
+ 
+
+6、事件对象
+ 1)事件参数e，就是事件对象，标准的获取方式
+btn.onclick = function(e) { }
+  2)e.eventPhase 事件阶段，IE8以前不支持
+ 3)e.target 始终是触发事件的对象（点击的按钮）
+        i）IE8以前 srcElement
+         ii）浏览器兼容
+var target = e.target || window.event.srcElement;
+
+ 
+// 获取事件对象 兼容浏览器
+ getEvent: function(e) {
+  return e || window.event; // e事件对象 标准的获取方式； window.event IE8以前获取事件对象的方式
+ }
+// 兼容target
+ getTarget: function(e) {
+  return e.target || e.srcElement;
+ }
+ 
+
+7、获取鼠标在页面上的位置
+①在可视区域中的位置：  e.clientX   e.clientY
+ ②在文档中的位置： 
+        i） e.pageX      e.pageY
+         ii）浏览器兼容
+
+var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+ var pageY = e.clientY + scrollTop;
+ 
+
+8、获取页面滚动的距离
+
+// 兼容浏览器
+var scrollTop = document.documentElement.scrollTop || document.body.scrolltop;
+ 
+
+9、取消文本的选择
+ 
+// 兼容浏览器
+ window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty();
+ 
+
+【总结】这里只是做了一部分的小结，实际开发中也还会遇到各种浏览器兼容的问题。不同浏览器在PC端和手机端也会遇到不同适配问题，这些就有待童鞋们一起去发掘总结啦~~希望能帮到大家，不足的地方请多指教啦~~~
